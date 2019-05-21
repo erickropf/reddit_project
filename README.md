@@ -1,1 +1,26 @@
 # reddit_project
+
+
+## WebAPI and Classification
+
+### Problem Statement:
+
+   Demonstrate natural language processes and modelling techiques to show how a machine can be taught to classify posts by the title of each post. Reddit is a source that houses posts of many different topics and this site is the source of the posts. For this exercise movie posts and television posts will be providing the data. 
+   
+### Data Gathering
+   The movie subset(known as a Subreddit) and the tv Subreddit are accessed using requests. The subreddits allow twenty five posts to be gather per requests , so it is necessary to loop the request up to the daily maximum.  As the post titles are gathered, they are gathered into lists of strings. 
+   
+### Data cleaning/Preprocessing 
+   !950 titles were gathered from the subreddits, aproximately 50.8% from TV and the remainder from Movie. The strings have to be prepared for use by the models. The titles contain spaces and punctuation that need to be removed and all of the letters can be lower case to avoid as many unhelpful features as possible - Book and book do not need seperate columns. At this stage, the strings are also put through a stemmer, a tool that truncates words back to a grammatical root run and running may become 1 feature. This tool was tested separately and it gave a minor improvement to ending scores. The number of scenarios became quite complex during the modelling stage so the stemming stage was evaluated during preprocessing. A more robust exercise would involve tokenizing/stemming/lemmatizing along with modelling at the cost of greater complexity. The cleaning function also allows for stop words to be remove from the data but this was not used because the stop words are a hyperparameter that can be optimized during the next stage. At the end of the preprocessing the data is saved to a csv file so that the reddit site does not need to be visited again. The data is also assigned to data and target variables and then train/test split is used to allow for cross validation testing. The split(75%train,25%test) is stratified so train and test set will be reflective to the original composition, and a random state is set.
+   
+### Modeling
+   The models to be implemented are all classification models since the target variable is binary. Pipelines will be used to facilitate testing of models and vectorizers together. Gridsearch will be used in conjunction with Pipeline to allow for coordinated hyperparameter tuning. The vectorizers are CountVectorizer and TfidfVectorizer both have tuning parameters of maximum features to restrict number of columns, n_gram range to vary size of word chunks 1 or 2 words, and stop words- whether or not to remove certain common words that normally do not have predictive value.The vectorizers then create a matrix comprised of all the words to be used from all of the titles as column headings and the count of each word in the rows(one row per post title). It is the model's job to employ it's algorithm interpret the matrix data for making a prediction about the target in question.  The models to be used are LogisticRegression, KNNeighbors, MultinomialNB, DecisionTree, Bagging Classifier,RandomForest,ADABoost and SupportVectorMachine. Each model has a different set of tuning parameters. All parameters were tuned through trial and error in an attempt to arrive at an optimal solution for each vectorizer/model combination. 
+   
+### Evaluation
+   The composition of the original dataset is .508 TV and .488 Movie, thus the baseline score is .508. All of the combinations produced accuracy scores: cross validation scores, training scores and testing scores. These are gathered in a table to allow for easy comparision. Ideally train, test and cross scores will all be similar and then choosing the best would involve choosing the highest score. In a case where scores are not similar, then seeking the smallest difference between between the three for all the combinations is the best method to distinguish top performance. Once the top performer is identified it may be possible to look at model output to understand how the determinations were made.
+   
+### Summary 
+
+   Several of the vectorizer/model combinations performed quite well and probably a different dataset would result in different rankings. All these combinations had symptoms of being overfit - model performance on seen data was better than unseen. Ideally the model would perform equally well on both sets of data. The combination with the smallest difference among it's own three scores was TfidfVectorizer and LogisticRegression. The vectorizer is different in that the rarity of a word in a document is given more weight, as oppose to simply relying on word count.The LogisticRegression model then takes the matrix data to compute coefficients for each feature to calculate probabilities the binary outcomes for each target variable. This combination  has a .073 difference between the three scores, cross .924, test .932, train .997.
+   
+   
